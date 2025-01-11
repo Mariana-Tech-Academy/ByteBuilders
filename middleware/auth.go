@@ -1,9 +1,11 @@
 package middleware
 
 import (
+	"errors"
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
@@ -60,4 +62,16 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		c.Next()
 	}
+}
+
+func GenerateJWT(username, role string) (string, error) {
+	jwtKey := os.Getenv("JWT_SECRET")
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{"username": username, "role": role, "exp": time.Now().Add(24 * time.Hour).Unix()})
+	tokenString, err := token.SignedString([]byte(jwtKey))
+	if err != nil {
+		return "", errors.New("Could not create token")
+	}
+
+	return tokenString, nil
 }

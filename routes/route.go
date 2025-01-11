@@ -8,11 +8,12 @@ import (
 func RegisterRoutes(r *gin.Engine,
 	bookController *controllers.BookController,
 	borrowController *controllers.BorrowController,
-	adminController *controllers.AdminController) {
+	adminController *controllers.AdminController,
+	userController *controllers.UserController) {
 
 	// Public authentication routes
-	r.POST("/signup", controllers.Register)
-	r.POST("/login", controllers.Login)
+	r.POST("/signup", userController.Register)
+	r.POST("/login", userController.Login)
 
 	// Book routes
 
