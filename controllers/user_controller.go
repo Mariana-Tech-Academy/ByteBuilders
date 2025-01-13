@@ -26,7 +26,7 @@ func (u *UserController) Register(c *gin.Context) {
 
 	err := u.userService.SignUp(req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to register user"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -43,7 +43,7 @@ func (u *UserController) Login(c *gin.Context) {
 
 	tokenString, err := u.userService.Login(req.Username, req.Password)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
