@@ -2,6 +2,7 @@ package routes
 
 import (
 	"digital-library/controllers"
+	"digital-library/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,4 +22,5 @@ func RegisterRoutes(r *gin.Engine,
 
 	// Admin routes for user management
 
+	r.GET("/user", middleware.AuthMiddleware(), userController.GetUserByUsername)
 }
