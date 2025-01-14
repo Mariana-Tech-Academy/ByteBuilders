@@ -6,13 +6,12 @@ import (
 	"digital-library/repositories"
 	"digital-library/utils"
 	"errors"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService interface {
 	SignUp(request models.User) error
 	Login(username, password string) (string, error)
+	GetUserByUserName(username string) (models.User, error)
 }
 
 type userService struct {
@@ -56,9 +55,9 @@ func (s userService) Login(username, password string) (string, error) {
 		return "", errors.New("user not found")
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	err = utils.CompareHashAndPassword(user.Password, password)
 	if err != nil {
-		return "", errors.New("invalid password")
+		return "invalid password", err
 	}
 
 	// Generate JWT token
@@ -68,4 +67,14 @@ func (s userService) Login(username, password string) (string, error) {
 	}
 
 	return token, nil
+}
+
+func (s userService) GetUserByUserName(username string) (models.User, error) {
+
+	user, err := s.userRepo.FindUserByUsername(username)
+	if err != nil {
+		return models.User{}, err
+	}
+
+	return user, nil
 }

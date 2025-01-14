@@ -49,3 +49,18 @@ func (u *UserController) Login(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"token": tokenString, "message": "Login successful"})
 }
+
+func (u *UserController) GetUserByUsername(c *gin.Context) {
+
+	username := c.Query("username")
+
+	user, err := u.userService.GetUserByUserName(username)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
+	}
+
+	user.Password = ""
+
+	c.JSON(http.StatusOK, gin.H{"user": user})
+}
