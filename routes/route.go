@@ -18,6 +18,8 @@ func RegisterRoutes(r *gin.Engine,
 
 	// Book routes
 
+	r.DELETE("/deletebook",adminController.DeleteBook)
+
 	// Borrow and return routes
 
 	// Admin routes for user management

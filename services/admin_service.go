@@ -30,3 +30,20 @@ func (r *AdminService) UpdateBook(book models.Book) (models.Book, error) {
 
 	return updatedBook, nil
 }
+
+
+func (s AdminService) DeleteBook(Title string) (string, error) {
+	
+	book, err := s.adminRepo.FindIdByBookName(Title)
+	if err != nil {
+		return "", errors.New("Book not found")
+	}
+
+	err = s.adminRepo.DeleteBook(book)
+	if err != nil {
+		return "Book Succesfully Deleted", errors.New("Unable to delete book")
+	}
+	return "Book Successfully Deleted",nil
+
+
+}

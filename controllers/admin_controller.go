@@ -39,3 +39,18 @@ func (r *AdminController) UpdateBook(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": updatedBook})
 }
+
+func (p *AdminController) DeleteBook(c *gin.Context) {
+
+	Title := c.Query("Title")
+
+	deleteMessage, err := p.adminService.DeleteBook(Title)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"user": deleteMessage})
+
+}
+
