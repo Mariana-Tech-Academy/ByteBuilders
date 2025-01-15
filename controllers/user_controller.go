@@ -64,3 +64,4 @@ func (u *UserController) GetUserByUsername(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
+uyguilgk
