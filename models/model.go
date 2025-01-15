@@ -33,3 +33,8 @@ type Borrow struct {
 	User   User   `gorm:"foreignKey:UserID"`          // Relationship with user
 	Book   Book   `gorm:"foreignKey:BookID"`          // Relationship with book
 }
+
+type BlacklistedToken struct {
+	gorm.Model
+	Token string `gorm:"unique;not null"`
+}

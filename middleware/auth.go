@@ -1,6 +1,8 @@
 package middleware
 
 import (
+	"digital-library/config"
+	"digital-library/models"
 	"errors"
 	"net/http"
 	"os"
@@ -35,6 +37,15 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		tokenString := parts[1]
+
+		// Check if the token is blacklisted
+		var blacklistedToken models.BlacklistedToken
+		result := config.DB.Where("token = ?", tokenString).First(&blacklistedToken)
+		if result.RowsAffected > 0 {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token is blacklisted"})
+			c.Abort()
+			return
+		}
 
 		jwtKey := os.Getenv("JWT_SECRET")
 
