@@ -25,4 +25,5 @@ func RegisterRoutes(r *gin.Engine,
 	// Admin routes for user management
 
 	r.GET("/user", middleware.AuthMiddleware(), userController.GetUserByUsername)
+	r.POST("/addbook", middleware.AuthMiddleware(), middleware.RoleMiddleware("admin"), adminController.AddBook)
 }
