@@ -26,4 +26,5 @@ func RegisterRoutes(r *gin.Engine,
 	r.PUT("/updatebook", middleware.AuthMiddleware(), middleware.RoleMiddleware("admin"), adminController.UpdateBook)
 
 	r.GET("/user", middleware.AuthMiddleware(), userController.GetUserByUsername)
+	r.POST("/addbook", middleware.AuthMiddleware(), middleware.RoleMiddleware("admin"), adminController.AddBook)
 }

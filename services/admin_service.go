@@ -46,3 +46,10 @@ func (s AdminService) DeleteBook(Title string) (string, error) {
 
 
 }
+func (a AdminService) AddBook(book models.Book) (string, error){
+	err := a.adminRepo.AddBook(book)
+	if err != nil {
+		return "Book adding unsuccessful", err
+	}
+	return "Book Successfully Added", nil
+}
