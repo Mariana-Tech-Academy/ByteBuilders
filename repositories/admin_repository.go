@@ -8,12 +8,10 @@ import (
 	"gorm.io/gorm"
 )
 
-type AdminRepository struct {
-	db *gorm.DB
-}
+type AdminRepository struct {}
 
-func NewAdminRepository(db *gorm.DB) *AdminRepository {
-	return &AdminRepository{db: db}
+func NewAdminRepository() *AdminRepository {
+	return &AdminRepository{}
 }
 
 func (r *AdminRepository) UpdateBook(book models.Book) (models.Book, error) {

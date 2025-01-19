@@ -6,7 +6,6 @@ import (
 	"errors"
 )
 
-var ErrUserNotFound = errors.New("user not found")
 
 type AdminService struct {
 	adminRepo *repositories.AdminRepository
