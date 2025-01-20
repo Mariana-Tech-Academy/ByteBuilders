@@ -6,7 +6,6 @@ import (
 	"errors"
 )
 
-
 type AdminService struct {
 	adminRepo *repositories.AdminRepository
 }

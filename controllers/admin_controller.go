@@ -42,15 +42,36 @@ func (r *AdminController) UpdateBook(c *gin.Context) {
 
 func (a *AdminController) AddBook(ctx *gin.Context) {
 	//create a request body
-	var req models.Book
+	var bookPayload struct {
+		Title       string `json:"title" binding:"required"`
+		Description string `json:"description"`
+		Copies      int    `json:"copies" binding:"required"`
+		AuthorName  string `json:"author_name" binding:"required"`
+	}
 
 	//decode request body into a struct
-	if err := ctx.ShouldBindJSON(&req); err != nil {
+	if err := ctx.ShouldBindJSON(&bookPayload); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+
+	book := models.Book{
+		Title:       bookPayload.Title,
+		Description: bookPayload.Description,
+		Copies:      bookPayload.Copies,
+	}
+
+
+	if book.Copies < 1 {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Copies must be greater than 0"})
+		return
+	} else {
+		book.Available = true
+	}
+
 	//call the service layer(AddBook)
-	err := a.adminService.AddBook(req)
+	err := a.adminService.AddBook(book)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

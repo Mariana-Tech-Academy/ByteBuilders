@@ -18,12 +18,11 @@ func NewBookController(service services.BookService) *BookController {
 
 func (p *BookController) DeleteBook(c *gin.Context) {
 	parmamID := c.Param("id")
-	id , err := strconv.Atoi(parmamID)
+	id, err := strconv.Atoi(parmamID)
 	if err != nil {
-		c.JSON(http.StatusBadRequest,gin.H{"error": "book ID not available "})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "book ID not available "})
 		return
 	}
-	
 
 	err = p.bookService.DeleteBook(uint(id))
 	if err != nil {

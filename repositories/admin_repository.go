@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type AdminRepository struct {}
+type AdminRepository struct{}
 
 func NewAdminRepository() *AdminRepository {
 	return &AdminRepository{}
@@ -62,3 +62,4 @@ func (r *AdminRepository) DeleteBook(book models.Book) error {
 func (a *AdminRepository) AddBook(book models.Book) error {
 	return config.DB.Create(&book).Error
 }
+

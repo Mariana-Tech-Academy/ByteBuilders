@@ -6,7 +6,7 @@ type User struct {
 	gorm.Model
 	Username string `gorm:"unique" json:"username" binding:"required"` // Unique username, required field
 	Password string `json:"password" binding:"required"`               // Password, required field
-	Role     string `json:"role" binding:"required"`                   // Role ("admin" or "user"), required field
+	Role     string `json:"role"`                                      // Role ("admin" or "user"), required field
 }
 
 type Book struct {

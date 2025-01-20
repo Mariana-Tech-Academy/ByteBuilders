@@ -31,7 +31,7 @@ func (r *bookRepository) DeleteBook(id uint) error {
 		return err
 	}
 
-	if err := config.DB.Delete(&book,id).Error; err != nil {
+	if err := config.DB.Delete(&book, id).Error; err != nil {
 		return err
 	}
 	return nil
