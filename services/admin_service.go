@@ -1,6 +1,7 @@
 package services
 
 import (
+	"digital-library/models"
 	"digital-library/repositories"
 	"errors"
 )
@@ -13,4 +14,12 @@ type AdminService struct {
 
 func NewAdminService(adminRepo *repositories.AdminRepository) *AdminService {
 	return &AdminService{adminRepo: adminRepo}
+}
+
+func (a AdminService) AddBook(book models.Book) error {
+	err := a.adminRepo.AddBook(book)
+	if err != nil {
+		return err
+	}
+	return nil
 }
