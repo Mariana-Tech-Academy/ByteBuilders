@@ -21,17 +21,17 @@ func (a *AdminController) AddBook(ctx *gin.Context) {
 	var req models.Book
 
 	//decode request body into a struct
-    if err := ctx.ShouldBindJSON(&req); err != nil {
-        ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	//call the service layer(AddBook)
-    msg ,err := a.adminService.AddBook(req)
-    if err != nil {
-        ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-        return
-    }
+	err := a.adminService.AddBook(req)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 	//response
-	
-	ctx.JSON(http.StatusOK, gin.H{"message": msg})
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "Book added successfully"})
 }
