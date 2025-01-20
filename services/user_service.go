@@ -69,7 +69,7 @@ func (s userService) Login(username, password string) (string, error) {
 	return token, nil
 }
 
-func (s userService) GetUserByUserName(username string) (models.User, error) {
+func (s *userService) GetUserByUserName(username string) (models.User, error) {
 
 	user, err := s.userRepo.FindUserByUsername(username)
 	if err != nil {
