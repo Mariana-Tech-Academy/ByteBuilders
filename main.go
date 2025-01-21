@@ -18,7 +18,7 @@ func main() {
 	// Initialize repositories
 	bookRepo := repositories.NewBookRepository()
 	borrowRepo := repositories.NewBorrowRepository()
-	adminRepo := repositories.NewAdminRepository(config.DB)
+	adminRepo := repositories.NewAdminRepository()
 	userRepo := repositories.NewUserRepository()
 
 	// Initialize services
