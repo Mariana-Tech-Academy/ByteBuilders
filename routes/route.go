@@ -15,7 +15,7 @@ func RegisterRoutes(r *gin.Engine,
 	// Public authentication routes
 	r.POST("/signup", userController.Register)
 	r.POST("/login", userController.Login)
-
+	r.POST("/logout", userController.Logout)
 	// Book routes
 
 	// Borrow and return routes
@@ -23,4 +23,5 @@ func RegisterRoutes(r *gin.Engine,
 	// Admin routes for user management
 
 	r.GET("/user", middleware.AuthMiddleware(), userController.GetUserByUsername)
+
 }
