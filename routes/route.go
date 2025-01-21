@@ -17,12 +17,12 @@ func RegisterRoutes(r *gin.Engine,
 	r.POST("/login", userController.Login)
 
 	// Book routes
-
-	r.DELETE("/deletebook/:id", bookController.DeleteBook)
+	r.DELETE("/deletebook/:id", middleware.AuthMiddleware(), middleware.RoleMiddleware("admin"), bookController.DeleteBook)
 
 	// Borrow and return routes
 
 	// Admin routes for user management
+	r.PUT("/updatebook", middleware.AuthMiddleware(), middleware.RoleMiddleware("admin"), adminController.UpdateBook)
 
 	r.GET("/user", middleware.AuthMiddleware(), userController.GetUserByUsername)
 	r.POST("/addbook", middleware.AuthMiddleware(), middleware.RoleMiddleware("admin"), adminController.AddBook)
