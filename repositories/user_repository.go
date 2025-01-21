@@ -8,6 +8,7 @@ import (
 type UserRepository interface {
 	FindUserByUsername(username string) (models.User, error)
 	AddUser(user models.User) error
+	AddTokenToBlacklist(tokenString models.BlacklistedToken) error
 }
 
 type userRepository struct{}
@@ -27,4 +28,9 @@ func (r *userRepository) FindUserByUsername(username string) (models.User, error
 
 func (r *userRepository) AddUser(user models.User) error {
 	return config.DB.Create(&user).Error
+}
+
+func (r *userRepository) AddTokenToBlacklist(tokenString models.BlacklistedToken) error {
+	return config.DB.Create(&tokenString).Error
+
 }

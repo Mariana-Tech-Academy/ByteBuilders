@@ -15,7 +15,7 @@ func RegisterRoutes(r *gin.Engine,
 	// Public authentication routes
 	r.POST("/signup", userController.Register)
 	r.POST("/login", userController.Login)
-
+	r.POST("/logout", userController.Logout)
 	// Book routes
 	r.DELETE("/deletebook/:id", middleware.AuthMiddleware(), middleware.RoleMiddleware("admin"), bookController.DeleteBook)
 
@@ -25,5 +25,7 @@ func RegisterRoutes(r *gin.Engine,
 	r.PUT("/updatebook", middleware.AuthMiddleware(), middleware.RoleMiddleware("admin"), adminController.UpdateBook)
 
 	r.GET("/user", middleware.AuthMiddleware(), userController.GetUserByUsername)
+
 	r.POST("/addbook", middleware.AuthMiddleware(), middleware.RoleMiddleware("admin"), adminController.AddBook)
+
 }

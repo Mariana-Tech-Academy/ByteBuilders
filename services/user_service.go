@@ -12,6 +12,8 @@ type UserService interface {
 	SignUp(request models.User) error
 	Login(username, password string) (string, error)
 	GetUserByUserName(username string) (models.User, error)
+
+	Logout(tokenstring string) error
 }
 
 type userService struct {
@@ -77,4 +79,17 @@ func (s *userService) GetUserByUserName(username string) (models.User, error) {
 	}
 
 	return user, nil
+}
+
+func (s *userService) Logout(tokenString string) error {
+    blacklist := models.BlacklistedToken{
+        Token: tokenString,
+    }
+    err := s.userRepo.AddTokenToBlacklist(blacklist)
+    if err != nil {
+        return errors.New("failed to add token")
+    }
+
+    return nil
+
 }
