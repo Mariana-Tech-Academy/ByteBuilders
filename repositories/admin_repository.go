@@ -8,7 +8,8 @@ import (
 	"gorm.io/gorm"
 )
 
-type AdminRepository struct{}
+type AdminRepository struct {
+}
 
 func NewAdminRepository() *AdminRepository {
 	return &AdminRepository{}
