@@ -28,8 +28,14 @@ func (r *AdminService) UpdateBook(book models.Book) (models.Book, error) {
 	return updatedBook, nil
 }
 
-func (a AdminService) AddBook(book models.Book) (error){
-	err := a.adminRepo.AddBook(book)
+func (a AdminService) AddBook(book models.Book) error {
+	author, err := a.adminRepo.AuthorExists(book.AuthorName)
+	if err != nil {
+		return err
+	}
+	book.AuthorID = author.ID
+
+	err = a.adminRepo.AddBook(book)
 	if err != nil {
 		return err
 	}
