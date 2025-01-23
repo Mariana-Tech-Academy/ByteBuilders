@@ -99,6 +99,7 @@ func (u *UserController) GetAuthors(ctx *gin.Context) {
 	authors, err := u.userService.GetAllAuthors()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
 	}
 	//response
 
