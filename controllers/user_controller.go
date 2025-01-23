@@ -95,3 +95,15 @@ func (u *UserController) Logout (c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"token": tokenString, "message": "Logout successful"})
 }
 
+func (u *UserController) GetAuthors(ctx *gin.Context) {
+	authors, err := u.userService.GetAllAuthors()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
+	}
+	//response
+
+	ctx.JSON(http.StatusOK, gin.H{"message": authors})
+}
+
+
