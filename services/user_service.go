@@ -81,14 +81,14 @@ func (s *userService) GetUserByUserName(username string) (models.User, error) {
 }
 
 func (s *userService) Logout(tokenString string) error {
-    blacklist := models.BlacklistedToken{
-        Token: tokenString,
-    }
-    err := s.userRepo.AddTokenToBlacklist(blacklist)
-    if err != nil {
-        return errors.New("failed to add token")
-    }
+	blacklist := models.BlacklistedToken{
+		Token: tokenString,
+	}
+	err := s.userRepo.AddTokenToBlacklist(blacklist)
+	if err != nil {
+		return errors.New("failed to add token")
+	}
 
-    return nil
+	return nil
 
 }

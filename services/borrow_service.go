@@ -7,39 +7,38 @@ import (
 )
 
 type BorrowService interface {
-	BorrowBook(bookid uint, username string) (string, error)
+	BorrowBook(bookid uint, username string) (models.Book, error)
 }
 
 type borrowService struct {
 	borrowRepo repositories.BorrowRepository
+	userRepo   repositories.UserRepository
 }
 
-func NewBorrowService(repo repositories.BorrowRepository) BorrowService {
-	return &borrowService{borrowRepo: repo}
-}
-
-func (p *borrowService) BorrowBook(bookid uint, username string) (string, error) {
-
-	_, err := p.borrowRepo.CheckIfBookExists(bookid)
-	if err != nil {
-		return "Book does not exist", err
+func NewBorrowService(repo repositories.BorrowRepository, usrRepo repositories.UserRepository) BorrowService {
+	return &borrowService{
+		userRepo:   usrRepo,
+		borrowRepo: repo,
 	}
+}
 
-	userId, err := p.borrowRepo.FindUserIDByUsername(username)
+func (p *borrowService) BorrowBook(bookid uint, username string) (models.Book, error) {
+
+	user, err := p.userRepo.FindUserByUsername(username)
 	if err != nil {
-		return "User does not exist", err
+		return models.Book{}, err
 	}
 
 	book, err := p.borrowRepo.FindBookByBookID(bookid)
 	if err != nil {
-		return "Book record does not exist", err
+		return models.Book{}, err
 	}
 
 	if book.Copies <= 0 {
-		return "Not enough books to borrow", errors.New("not enugh books to borrow")
+		return models.Book{}, errors.New("not enugh books to borrow")
 	}
 
-	book.Copies -= 1
+	book.Copies--
 
 	if book.Copies <= 0 {
 		book.Available = false
@@ -49,20 +48,18 @@ func (p *borrowService) BorrowBook(bookid uint, username string) (string, error)
 
 	_, err = p.borrowRepo.UpdateBook(book)
 	if err != nil {
-		return "", err
+		return models.Book{}, err
 	}
 
 	borrowRecord := models.Borrow{
-		UserID: userId,
+		UserID: user.ID,
 		BookID: bookid,
 		Status: "borrowed",
 	}
 
-	_, err = p.borrowRepo.CreateBorrow(borrowRecord)
+	err = p.borrowRepo.CreateBorrow(borrowRecord)
 	if err != nil {
-		return "Failed to create record", errors.New("failed to create borrow entry record")
+		return models.Book{}, errors.New("failed to create borrow entry record")
 	}
-	return "Borrow record created", nil
+	return book, nil
 }
-
-// find the user if they exist and if the author exist

@@ -55,13 +55,11 @@ func (a *AdminController) AddBook(ctx *gin.Context) {
 		return
 	}
 
-
 	book := models.Book{
 		Title:       bookPayload.Title,
 		Description: bookPayload.Description,
 		Copies:      bookPayload.Copies,
 	}
-
 
 	if book.Copies < 1 {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Copies must be greater than 0"})
@@ -80,4 +78,3 @@ func (a *AdminController) AddBook(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "Book added successfully"})
 }
-

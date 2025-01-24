@@ -24,15 +24,13 @@ func (p *BorrowController) BorrowBook(c *gin.Context) {
 	id, err := strconv.Atoi(paramsid)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Book ID not available"})
-		return 
+		return
 	}
 
-
-
-	reply, err := p.borrowService.BorrowBook(uint(id), username)
+	book, err := p.borrowService.BorrowBook(uint(id), username)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": reply})
+	c.JSON(http.StatusOK, gin.H{"message": book})
 }

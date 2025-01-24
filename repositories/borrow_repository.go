@@ -9,9 +9,8 @@ import (
 )
 
 type BorrowRepository interface {
-	CheckIfBookExists(id uint) (string, error)
 	FindUserIDByUsername(username string) (uint, error)
-	CreateBorrow(borrow models.Borrow) (string, error)
+	CreateBorrow(borrow models.Borrow) error
 	FindBookByBookID(bookid uint) (models.Book, error)
 	UpdateBook(book models.Book) (models.Book, error)
 }
@@ -20,19 +19,6 @@ type borrowRepository struct{}
 
 func NewBorrowRepository() BorrowRepository {
 	return &borrowRepository{}
-}
-
-func (y *borrowRepository) CheckIfBookExists(id uint) (string, error) {
-	var book models.Book
-	err := config.DB.Where("id = ?", id).First(&book).Error
-
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return "", errors.New("book not found")
-		}
-		return "", err
-	}
-	return "", nil
 }
 
 func (y *borrowRepository) FindUserIDByUsername(username string) (uint, error) {
@@ -47,8 +33,12 @@ func (y *borrowRepository) FindUserIDByUsername(username string) (uint, error) {
 func (y *borrowRepository) FindBookByBookID(bookid uint) (models.Book, error) {
 	var existingBook models.Book
 
-	if err := config.DB.Where("id = ?", bookid).First(&existingBook).Error; err != nil {
-		return models.Book{}, nil
+	err := config.DB.Where("id = ?", bookid).First(&existingBook).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return models.Book{}, errors.New("book not found")
+		}
+		return models.Book{}, err
 	}
 	return existingBook, nil
 }
@@ -60,6 +50,6 @@ func (y *borrowRepository) UpdateBook(book models.Book) (models.Book, error) {
 	return book, nil
 }
 
-func (y *borrowRepository) CreateBorrow(borrow models.Borrow) (string, error) {
-	return "", config.DB.Create(&borrow).Error
+func (y *borrowRepository) CreateBorrow(borrow models.Borrow) error {
+	return config.DB.Create(&borrow).Error
 }
