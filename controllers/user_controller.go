@@ -67,7 +67,7 @@ func (u *UserController) GetUserByUsername(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
-func (u *UserController) Logout (c *gin.Context) {
+func (u *UserController) Logout(c *gin.Context) {
 
 	tokenWithBearer := c.GetHeader("Authorization")
 		if tokenWithBearer == "" {

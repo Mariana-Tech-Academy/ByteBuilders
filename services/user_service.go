@@ -12,7 +12,6 @@ type UserService interface {
 	SignUp(request models.User) error
 	Login(username, password string) (string, error)
 	GetUserByUserName(username string) (models.User, error)
-
 	Logout(tokenstring string) error
 }
 
