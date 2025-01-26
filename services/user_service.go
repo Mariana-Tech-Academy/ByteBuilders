@@ -12,7 +12,8 @@ type UserService interface {
 	SignUp(request models.User) error
 	Login(username, password string) (string, error)
 	GetUserByUserName(username string) (models.User, error)
-	Logout(tokenstring string) error
+  Logout(tokenstring string) error
+	GetAllAuthors() ([]models.Author, error)
 }
 
 type userService struct {
@@ -91,4 +92,8 @@ func (s *userService) Logout(tokenString string) error {
 
 	return nil
 
+}
+
+func (u *userService) GetAllAuthors() ([]models.Author, error){
+	return u.userRepo.GetAllAuthors()
 }

@@ -9,6 +9,7 @@ type UserRepository interface {
 	FindUserByUsername(username string) (models.User, error)
 	AddUser(user models.User) error
 	AddTokenToBlacklist(tokenString models.BlacklistedToken) error
+	GetAllAuthors() ([]models.Author, error)
 }
 
 type userRepository struct{}
@@ -32,5 +33,17 @@ func (r *userRepository) AddUser(user models.User) error {
 
 func (r *userRepository) AddTokenToBlacklist(tokenString models.BlacklistedToken) error {
 	return config.DB.Create(&tokenString).Error
+
+}
+
+func (r *userRepository) GetAllAuthors() ([]models.Author, error) {
+	var authors []models.Author
+
+	err := config.DB.Find(&authors).Error
+
+	if err != nil {
+		return nil, err
+	}
+	return authors, nil
 
 }
