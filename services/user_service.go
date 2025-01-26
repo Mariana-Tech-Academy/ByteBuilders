@@ -12,7 +12,7 @@ type UserService interface {
 	SignUp(request models.User) error
 	Login(username, password string) (string, error)
 	GetUserByUserName(username string) (models.User, error)
-    Logout(tokenstring string) error
+  Logout(tokenstring string) error
 	GetAllAuthors() ([]models.Author, error)
 }
 
@@ -82,15 +82,15 @@ func (s *userService) GetUserByUserName(username string) (models.User, error) {
 }
 
 func (s *userService) Logout(tokenString string) error {
-    blacklist := models.BlacklistedToken{
-        Token: tokenString,
-    }
-    err := s.userRepo.AddTokenToBlacklist(blacklist)
-    if err != nil {
-        return errors.New("failed to add token")
-    }
+	blacklist := models.BlacklistedToken{
+		Token: tokenString,
+	}
+	err := s.userRepo.AddTokenToBlacklist(blacklist)
+	if err != nil {
+		return errors.New("failed to add token")
+	}
 
-    return nil
+	return nil
 
 }
 

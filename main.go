@@ -8,7 +8,6 @@ import (
 	"digital-library/services"
 
 	"github.com/gin-gonic/gin"
-
 )
 
 func main() {
@@ -23,7 +22,7 @@ func main() {
 
 	// Initialize services
 	bookService := services.NewBookService(bookRepo)
-	borrowService := services.NewBorrowService(borrowRepo)
+	borrowService := services.NewBorrowService(borrowRepo, userRepo)
 	adminService := services.NewAdminService(adminRepo)
 	userService := services.NewUserService(userRepo)
 
@@ -41,5 +40,5 @@ func main() {
 
 	// Start the server
 
-	r.Run(":8080", )
+	r.Run(":8080")
 }
