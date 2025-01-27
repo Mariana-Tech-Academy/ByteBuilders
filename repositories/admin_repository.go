@@ -49,10 +49,6 @@ func (a *AdminRepository) AddBook(book models.Book) error {
 	return config.DB.Create(&book).Error
 }
 
-func (r *AdminRepository) AddBook(book models.Book) error {
-	return config.DB.Create(&book).Error
-}
-
 func (r *AdminRepository) AddAuthorRecord(name string) (models.Author, error) {
 
 	var existingAuthor models.Author
@@ -84,4 +80,3 @@ func (r *AdminRepository) DeleteBook(id uint) error {
 	}
 	return nil
 }
-

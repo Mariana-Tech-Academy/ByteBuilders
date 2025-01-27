@@ -6,7 +6,6 @@ import (
 	"digital-library/repositories"
 	"digital-library/utils"
 	"errors"
-	
 )
 
 type UserService interface {
@@ -96,7 +95,6 @@ func (s *userService) Logout(tokenString string) error {
 	return nil
 
 }
-
 
 // call db methode
 // list of authors & errors
