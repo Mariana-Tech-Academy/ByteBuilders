@@ -4,6 +4,7 @@ import (
 	"digital-library/models"
 	"digital-library/services"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,10 +17,10 @@ func NewAdminController(service *services.AdminService) *AdminController {
 	return &AdminController{adminService: service}
 }
 
-func (r *AdminController) AddAuthor(c *gin.Context) {
+func (a *AdminController) AddAuthor(c *gin.Context) {
 
-	var AuthorName struct{
-		Name string `json:"name" binding:"required"` 
+	var AuthorName struct {
+		Name string `json:"name" binding:"required"`
 	}
 
 	if err := c.ShouldBindJSON(&AuthorName); err != nil {
@@ -31,15 +32,14 @@ func (r *AdminController) AddAuthor(c *gin.Context) {
 		Name: AuthorName.Name,
 	}
 
-	author,err := r.adminService.AddAuthor(author)
+	author, err := a.adminService.AddAuthor(author)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError,gin.H{"error": "failed to add author"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to add author"})
 	}
-	c.JSON(http.StatusOK,gin.H{"message": author})
+	c.JSON(http.StatusOK, gin.H{"message": author})
 }
 
-
-func (r *AdminController) UpdateBook(c *gin.Context) {
+func (a *AdminController) UpdateBook(c *gin.Context) {
 
 	var req models.Book
 
@@ -54,7 +54,7 @@ func (r *AdminController) UpdateBook(c *gin.Context) {
 		req.Available = true
 	}
 
-	updatedBook, err := r.adminService.UpdateBook(req)
+	updatedBook, err := a.adminService.UpdateBook(req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
@@ -100,4 +100,22 @@ func (a *AdminController) AddBook(ctx *gin.Context) {
 	//response
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "Book added successfully"})
+}
+
+func (a *AdminController) DeleteBook(c *gin.Context) {
+	parmamID := c.Param("id")
+	id, err := strconv.Atoi(parmamID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "book ID not available "})
+		return
+	}
+
+	err = a.adminService.DeleteBook(uint(id))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "The deletion was succesful"})
+
 }

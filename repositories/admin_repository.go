@@ -43,24 +43,39 @@ func (r *AdminRepository) AuthorExists(AuthorName string) (models.Author, error)
 	return author, nil
 }
 
-
 // writing the db method that adds the book to the book table in the DB
-func (a *AdminRepository) AddBook(book models.Book) error {
+func (r *AdminRepository) AddBook(book models.Book) error {
 	return config.DB.Create(&book).Error
 }
 
-
-func (a *AdminRepository) AddAuthorRecord(name string) (models.Author,error) {
+func (r *AdminRepository) AddAuthorRecord(name string) (models.Author, error) {
 
 	var existingAuthor models.Author
-	if err := config.DB.Where("name = ?",name).First(&existingAuthor).Error; err != nil {
-		return models.Author{} , err
+	if err := config.DB.Where("name = ?", name).First(&existingAuthor).Error; err != nil {
+		return models.Author{}, err
 	}
-
 
 	author := models.Author{Name: name}
 	if err := config.DB.Create(&author).Error; err != nil {
 		return models.Author{}, err
 	}
-	return author,nil
+	return author, nil
+}
+
+// this will take in the id and delete the Book from the database
+func (r *AdminRepository) DeleteBook(id uint) error {
+	book := models.Book{}
+
+	// check if the book exists in the database
+	if err := config.DB.First(&book, id).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return errors.New("book not found")
+		}
+		return err
+	}
+
+	if err := config.DB.Delete(&book, id).Error; err != nil {
+		return err
+	}
+	return nil
 }
