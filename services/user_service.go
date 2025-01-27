@@ -12,8 +12,9 @@ type UserService interface {
 	SignUp(request models.User) error
 	Login(username, password string) (string, error)
 	GetUserByUserName(username string) (models.User, error)
-  Logout(tokenstring string) error
+	Logout(tokenstring string) error
 	GetAllAuthors() ([]models.Author, error)
+	BorrowBook(bookid uint, username string) (models.Book, error)
 }
 
 type userService struct {
@@ -94,6 +95,48 @@ func (s *userService) Logout(tokenString string) error {
 
 }
 
-func (u *userService) GetAllAuthors() ([]models.Author, error){
-	return u.userRepo.GetAllAuthors()
+func (s *userService) GetAllAuthors() ([]models.Author, error) {
+	return s.userRepo.GetAllAuthors()
+}
+
+func (s *userService) BorrowBook(bookid uint, username string) (models.Book, error) {
+
+	user, err := s.userRepo.FindUserByUsername(username)
+	if err != nil {
+		return models.Book{}, err
+	}
+
+	book, err := s.userRepo.FindBookByBookID(bookid)
+	if err != nil {
+		return models.Book{}, err
+	}
+
+	if book.Copies <= 0 {
+		return models.Book{}, errors.New("not enugh books to borrow")
+	}
+
+	book.Copies--
+
+	if book.Copies <= 0 {
+		book.Available = false
+	} else {
+		book.Available = true
+	}
+
+	_, err = s.userRepo.UpdateBook(book)
+	if err != nil {
+		return models.Book{}, err
+	}
+
+	borrowRecord := models.Borrow{
+		UserID: user.ID,
+		BookID: bookid,
+		Status: "borrowed",
+	}
+
+	err = s.userRepo.CreateBorrow(borrowRecord)
+	if err != nil {
+		return models.Book{}, errors.New("failed to create borrow entry record")
+	}
+	return book, nil
 }
