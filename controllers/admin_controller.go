@@ -16,6 +16,29 @@ func NewAdminController(service *services.AdminService) *AdminController {
 	return &AdminController{adminService: service}
 }
 
+func (r *AdminController) AddAuthor(c *gin.Context) {
+
+	var AuthorName struct{
+		Name string `json:"name" binding:"required"` 
+	}
+
+	if err := c.ShouldBindJSON(&AuthorName); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	author := models.Author{
+		Name: AuthorName.Name,
+	}
+
+	author,err := r.adminService.AddAuthor(author)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,gin.H{"error": "failed to add author"})
+	}
+	c.JSON(http.StatusOK,gin.H{"message": author})
+}
+
+
 func (r *AdminController) UpdateBook(c *gin.Context) {
 
 	var req models.Book

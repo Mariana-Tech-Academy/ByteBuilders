@@ -43,7 +43,24 @@ func (r *AdminRepository) AuthorExists(AuthorName string) (models.Author, error)
 	return author, nil
 }
 
+
 // writing the db method that adds the book to the book table in the DB
 func (a *AdminRepository) AddBook(book models.Book) error {
 	return config.DB.Create(&book).Error
+}
+
+
+func (a *AdminRepository) AddAuthorRecord(name string) (models.Author,error) {
+
+	var existingAuthor models.Author
+	if err := config.DB.Where("name = ?",name).First(&existingAuthor).Error; err != nil {
+		return models.Author{} , err
+	}
+
+
+	author := models.Author{Name: name}
+	if err := config.DB.Create(&author).Error; err != nil {
+		return models.Author{}, err
+	}
+	return author,nil
 }

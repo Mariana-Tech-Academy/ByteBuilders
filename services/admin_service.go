@@ -41,3 +41,12 @@ func (a AdminService) AddBook(book models.Book) error {
 	}
 	return nil
 }
+
+func (a AdminService) AddAuthor(request models.Author) (models.Author,error) {
+
+	author,err := a.adminRepo.AddAuthorRecord(request.Name)
+	if err != nil {
+		return models.Author{},err
+	}
+	return author , nil
+}
