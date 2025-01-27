@@ -9,6 +9,7 @@ type UserRepository interface {
 	FindUserByUsername(username string) (models.User, error)
 	AddUser(user models.User) error
 	AddTokenToBlacklist(tokenString models.BlacklistedToken) error
+	ListBorrowedBooks(UserID uint) ([]models.Borrow, error)
 }
 
 type userRepository struct{}
@@ -33,4 +34,13 @@ func (r *userRepository) AddUser(user models.User) error {
 func (r *userRepository) AddTokenToBlacklist(tokenString models.BlacklistedToken) error {
 	return config.DB.Create(&tokenString).Error
 
+}
+func (r *userRepository) ListBorrowedBooks(UserID uint) ([]models.Borrow, error) {
+	var existingBook []models.Borrow
+
+	if err := config.DB.Where("user_id = ? AND status = ?", UserID, "borrowed").Find(&existingBook).Error; err != nil {
+		return []models.Borrow{}, err
+	}
+
+	return existingBook, nil
 }

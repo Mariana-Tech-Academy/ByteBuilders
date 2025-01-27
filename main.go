@@ -8,7 +8,6 @@ import (
 	"digital-library/services"
 
 	"github.com/gin-gonic/gin"
-
 )
 
 func main() {
@@ -41,5 +40,5 @@ func main() {
 
 	// Start the server
 
-	r.Run(":8080", )
+	r.Run(":8080")
 }

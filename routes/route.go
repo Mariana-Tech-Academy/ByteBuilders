@@ -18,7 +18,7 @@ func RegisterRoutes(r *gin.Engine,
 	r.POST("/logout", userController.Logout)
 	// Book routes
 	r.DELETE("/deletebook/:id", middleware.AuthMiddleware(), middleware.RoleMiddleware("admin"), bookController.DeleteBook)
-
+	r.GET("/listborrowedbook", middleware.AuthMiddleware(), userController.ListBorrowedBooks)
 	// Borrow and return routes
 
 	// Admin routes for user management

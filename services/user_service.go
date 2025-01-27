@@ -6,14 +6,15 @@ import (
 	"digital-library/repositories"
 	"digital-library/utils"
 	"errors"
+	
 )
 
 type UserService interface {
 	SignUp(request models.User) error
 	Login(username, password string) (string, error)
 	GetUserByUserName(username string) (models.User, error)
-
 	Logout(tokenstring string) error
+	ListBorrowedBooks(username string) ([]models.Borrow, error)
 }
 
 type userService struct {
@@ -82,14 +83,34 @@ func (s *userService) GetUserByUserName(username string) (models.User, error) {
 }
 
 func (s *userService) Logout(tokenString string) error {
-    blacklist := models.BlacklistedToken{
-        Token: tokenString,
-    }
-    err := s.userRepo.AddTokenToBlacklist(blacklist)
-    if err != nil {
-        return errors.New("failed to add token")
-    }
+	blacklist := models.BlacklistedToken{
+		Token: tokenString,
+	}
+	err := s.userRepo.AddTokenToBlacklist(blacklist)
+	if err != nil {
+		return errors.New("failed to add token")
+	}
 
-    return nil
+	return nil
+
+}
+
+// call db methode
+// list of authors & errors
+// if we need then
+
+func (s *userService) ListBorrowedBooks(username string) ([]models.Borrow, error) {
+
+	user, err := s.userRepo.FindUserByUsername(username)
+	if err != nil {
+		return []models.Borrow{}, err
+	}
+
+	listOfBooks, err := s.userRepo.ListBorrowedBooks(user.ID)
+	if err != nil {
+		return []models.Borrow{}, err
+	}
+
+	return listOfBooks, nil
 
 }
