@@ -15,20 +15,14 @@ func main() {
 	config.InitDatabase()
 
 	// Initialize repositories
-	bookRepo := repositories.NewBookRepository()
-	borrowRepo := repositories.NewBorrowRepository()
 	adminRepo := repositories.NewAdminRepository()
 	userRepo := repositories.NewUserRepository()
 
 	// Initialize services
-	bookService := services.NewBookService(bookRepo)
-	borrowService := services.NewBorrowService(borrowRepo, userRepo)
 	adminService := services.NewAdminService(adminRepo)
 	userService := services.NewUserService(userRepo)
 
 	// Initialize controllers
-	bookController := controllers.NewBookController(bookService)
-	borrowController := controllers.NewBorrowController(borrowService)
 	adminController := controllers.NewAdminController(adminService)
 	userController := controllers.NewUserController(userService)
 
@@ -36,7 +30,7 @@ func main() {
 	r := gin.Default()
 
 	// Register routes
-	routes.RegisterRoutes(r, bookController, borrowController, adminController, userController)
+	routes.RegisterRoutes(r, adminController, userController)
 
 	// Start the server
 
