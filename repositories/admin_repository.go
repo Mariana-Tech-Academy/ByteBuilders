@@ -44,7 +44,8 @@ func (r *AdminRepository) AuthorExists(AuthorName string) (models.Author, error)
 }
 
 // writing the db method that adds the book to the book table in the DB
-func (r *AdminRepository) AddBook(book models.Book) error {
+
+func (a *AdminRepository) AddBook(book models.Book) error {
 	return config.DB.Create(&book).Error
 }
 
