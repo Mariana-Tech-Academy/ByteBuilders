@@ -13,14 +13,14 @@ func NewAdminService(adminRepo *repositories.AdminRepository) *AdminService {
 	return &AdminService{adminRepo: adminRepo}
 }
 
-func (r *AdminService) UpdateBook(book models.Book) (models.Book, error) {
-	author, err := r.adminRepo.AuthorExists(book.AuthorName)
+func (s *AdminService) UpdateBook(book models.Book) (models.Book, error) {
+	author, err := s.adminRepo.AuthorExists(book.AuthorName)
 	if err != nil {
 		return models.Book{}, err
 	}
 	book.AuthorID = author.ID
 
-	updatedBook, err := r.adminRepo.UpdateBook(book)
+	updatedBook, err := s.adminRepo.UpdateBook(book)
 	if err != nil {
 		return models.Book{}, err
 	}
@@ -28,14 +28,32 @@ func (r *AdminService) UpdateBook(book models.Book) (models.Book, error) {
 	return updatedBook, nil
 }
 
-func (a AdminService) AddBook(book models.Book) error {
-	author, err := a.adminRepo.AuthorExists(book.AuthorName)
+func (s AdminService) AddBook(book models.Book) error {
+	author, err := s.adminRepo.AuthorExists(book.AuthorName)
 	if err != nil {
 		return err
 	}
 	book.AuthorID = author.ID
 
-	err = a.adminRepo.AddBook(book)
+	err = s.adminRepo.AddBook(book)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s AdminService) AddAuthor(request models.Author) (models.Author, error) {
+
+	author, err := s.adminRepo.AddAuthorRecord(request.Name)
+	if err != nil {
+		return models.Author{}, err
+	}
+	return author, nil
+}
+
+func (s *AdminService) DeleteBook(id uint) error {
+	// delete the book by the ID
+	err := s.adminRepo.DeleteBook(id)
 	if err != nil {
 		return err
 	}
