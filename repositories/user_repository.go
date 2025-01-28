@@ -11,12 +11,15 @@ type UserRepository interface {
 	FindUserByUsername(username string) (models.User, error)
 	AddUser(user models.User) error
 	AddTokenToBlacklist(tokenString models.BlacklistedToken) error
+	ListBorrowedBooks(UserID uint) ([]models.Borrow, error)
 	GetAllAuthors() ([]models.Author, error)
 	FindUserIDByUsername(username string) (uint, error)
 	CreateBorrow(borrow models.Borrow) error
 	FindBookByBookID(bookid uint) (models.Book, error)
 	UpdateBook(book models.Book) (models.Book, error)
 	FindBookByEntry(search string) ([]models.Book,error)
+	FindBorrowedRecordByBookID(bookID uint) (models.Borrow, error)
+	MarkBorrowAsReturned(borrowID uint) error
 }
 
 type userRepository struct{}
@@ -41,6 +44,16 @@ func (r *userRepository) AddUser(user models.User) error {
 func (r *userRepository) AddTokenToBlacklist(tokenString models.BlacklistedToken) error {
 	return config.DB.Create(&tokenString).Error
 
+}
+
+func (r *userRepository) ListBorrowedBooks(UserID uint) ([]models.Borrow, error) {
+	var existingBook []models.Borrow
+
+	if err := config.DB.Where("user_id = ? AND status = ?", UserID, "borrowed").Find(&existingBook).Error; err != nil {
+		return []models.Borrow{}, err
+	}
+
+	return existingBook, nil
 }
 
 func (r *userRepository) GetAllAuthors() ([]models.Author, error) {
@@ -88,7 +101,6 @@ func (r *userRepository) CreateBorrow(borrow models.Borrow) error {
 	return config.DB.Create(&borrow).Error
 }
 
-
 func (r *userRepository) FindBookByEntry(search string) ([]models.Book,error) {
 	var books []models.Book
 
@@ -99,3 +111,18 @@ func (r *userRepository) FindBookByEntry(search string) ([]models.Book,error) {
 
 
 }
+
+func (r *userRepository) FindBorrowedRecordByBookID(bookid uint) (models.Borrow, error) {
+    var borrow models.Borrow
+
+    err := config.DB.Where("book_id = ?", bookid).First(&borrow).Error
+    if err != nil {
+        return models.Borrow{}, err
+    }
+    return borrow, nil
+}
+
+func (r *userRepository) MarkBorrowAsReturned(borrowid uint) error {
+    return config.DB.Model(&models.Borrow{}).Where("id = ?", borrowid).Update("status", "returned").Error
+}
+

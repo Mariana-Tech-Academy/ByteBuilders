@@ -20,6 +20,9 @@ func RegisterRoutes(r *gin.Engine,
 	r.POST("/logout", middleware.AuthMiddleware(), userController.Logout)
 	r.GET("/getauthors", middleware.AuthMiddleware(), userController.GetAuthors)
 	r.GET("/searchbook",middleware.AuthMiddleware() ,userController.SearchBooks)
+	r.POST("/returnborrowedbook/:id", middleware.AuthMiddleware(), userController.ReturnBorrowedBook)
+	r.GET("/listborrowedbook", middleware.AuthMiddleware(), userController.ListBorrowedBooks)
+
 
 	// Admin routes for user management
 	r.POST("/addbook", middleware.AuthMiddleware(), middleware.RoleMiddleware("admin"), adminController.AddBook)

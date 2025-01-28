@@ -96,6 +96,20 @@ func (u *UserController) Logout(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"token": tokenString, "message": "Logout successful"})
 }
 
+func (u *UserController) ListBorrowedBooks(c *gin.Context) {
+
+	username := c.GetString("username")
+
+	borrowedbooks, err := u.userService.ListBorrowedBooks(username)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"user": borrowedbooks})
+
+}
+
 func (u *UserController) GetAuthors(ctx *gin.Context) {
 	authors, err := u.userService.GetAllAuthors()
 	if err != nil {
@@ -126,7 +140,6 @@ func (u *UserController) BorrowBook(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": book})
 }
 
-
 func (t *UserController) SearchBooks(c *gin.Context) {
 
 	query := c.Query("q")
@@ -138,3 +151,20 @@ func (t *UserController) SearchBooks(c *gin.Context) {
 
 	c.JSON(http.StatusFound,gin.H{"message": books})
 }
+
+func (u *UserController) ReturnBorrowedBook(c *gin.Context) {
+
+	paramsid := c.Param("id")
+	id, err := strconv.Atoi(paramsid)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Book ID not available"})
+		return
+	}
+	err = u.userService.ReturnBorrowedBook(uint(id))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Book returned"})
+}
+
