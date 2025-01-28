@@ -4,7 +4,6 @@ import (
 	"digital-library/config"
 	"digital-library/models"
 	"errors"
-
 	"gorm.io/gorm"
 )
 
@@ -18,6 +17,7 @@ type UserRepository interface {
 	CreateBorrow(borrow models.Borrow) error
 	FindBookByBookID(bookid uint) (models.Book, error)
 	UpdateBook(book models.Book) (models.Book, error)
+	FindBookByEntry(search string) ([]models.Book,error)
 	FindBorrowedRecordByBookID(bookID uint) (models.Borrow, error)
 	MarkBorrowAsReturned(borrowID uint) error
 }
@@ -101,6 +101,17 @@ func (r *userRepository) CreateBorrow(borrow models.Borrow) error {
 	return config.DB.Create(&borrow).Error
 }
 
+func (r *userRepository) FindBookByEntry(search string) ([]models.Book,error) {
+	var books []models.Book
+
+	if err := config.DB.Where("title LIKE ? OR description LIKE ? OR author_name LIKE ?", "%"+search+"%", "%"+search+"%", "%"+search+"%").Find(&books).Error ; err != nil{
+		return []models.Book{} ,err
+	}
+	return books , nil
+
+
+}
+
 func (r *userRepository) FindBorrowedRecordByBookID(bookid uint) (models.Borrow, error) {
     var borrow models.Borrow
 
@@ -114,5 +125,4 @@ func (r *userRepository) FindBorrowedRecordByBookID(bookid uint) (models.Borrow,
 func (r *userRepository) MarkBorrowAsReturned(borrowid uint) error {
     return config.DB.Model(&models.Borrow{}).Where("id = ?", borrowid).Update("status", "returned").Error
 }
-
 

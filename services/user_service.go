@@ -16,6 +16,7 @@ type UserService interface {
 	ListBorrowedBooks(username string) ([]models.Borrow, error)
 	GetAllAuthors() ([]models.Author, error)
 	BorrowBook(bookid uint, username string) (models.Book, error)
+	SearchForBook(search string) ([]models.Book,error)
 	ReturnBorrowedBook(bookid uint) error
 }
 
@@ -162,6 +163,16 @@ func (s *userService) BorrowBook(bookid uint, username string) (models.Book, err
 	return book, nil
 }
 
+
+func (s *userService) SearchForBook(search string) ([]models.Book,error) {
+
+	book , err := s.userRepo.FindBookByEntry(search)
+	if err != nil {
+		return []models.Book{} , err
+	}
+	return book , err
+}
+
 func (s *userService) ReturnBorrowedBook(bookid uint)  error {
 
 	book, err := s.userRepo.FindBookByBookID(bookid)
@@ -194,5 +205,4 @@ func (s *userService) ReturnBorrowedBook(bookid uint)  error {
 
 	return nil
 }
-
 
