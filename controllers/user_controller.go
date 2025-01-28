@@ -125,3 +125,16 @@ func (u *UserController) BorrowBook(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"message": book})
 }
+
+
+func (t *UserController) SearchBooks(c *gin.Context) {
+
+	query := c.Query("q")
+
+	books, err := t.userService.SearchForBook(query)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,gin.H{"Error": "Failed to find book"})
+	}
+
+	c.JSON(http.StatusFound,gin.H{"message": books})
+}

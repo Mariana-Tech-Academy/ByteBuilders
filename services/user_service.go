@@ -15,6 +15,7 @@ type UserService interface {
 	Logout(tokenstring string) error
 	GetAllAuthors() ([]models.Author, error)
 	BorrowBook(bookid uint, username string) (models.Book, error)
+	SearchForBook(search string) ([]models.Book,error)
 }
 
 type userService struct {
@@ -139,4 +140,13 @@ func (s *userService) BorrowBook(bookid uint, username string) (models.Book, err
 		return models.Book{}, errors.New("failed to create borrow entry record")
 	}
 	return book, nil
+}
+
+func (s *userService) SearchForBook(search string) ([]models.Book,error) {
+
+	book , err := s.userRepo.FindBookByEntry(search)
+	if err != nil {
+		return []models.Book{} , err
+	}
+	return book , err
 }
