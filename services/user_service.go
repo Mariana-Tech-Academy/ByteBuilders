@@ -16,6 +16,7 @@ type UserService interface {
 	ListBorrowedBooks(username string) ([]models.Borrow, error)
 	GetAllAuthors() ([]models.Author, error)
 	BorrowBook(bookid uint, username string) (models.Book, error)
+	ReturnBorrowedBook(bookid uint) error
 }
 
 type userService struct {
@@ -160,3 +161,38 @@ func (s *userService) BorrowBook(bookid uint, username string) (models.Book, err
 	}
 	return book, nil
 }
+
+func (s *userService) ReturnBorrowedBook(bookid uint)  error {
+
+	book, err := s.userRepo.FindBookByBookID(bookid)
+	if err != nil {
+		return err
+	}
+
+	borrow, err := s.userRepo.FindBorrowedRecordByBookID(bookid)
+	if err != nil {
+		return err
+	}
+
+	err = s.userRepo.MarkBorrowAsReturned(borrow.ID)
+	if err != nil {
+		return err
+	}
+
+	book.Copies++
+
+	if book.Copies <= 0 {
+		book.Available = false
+	} else {
+		book.Available = true
+	}
+
+	_, err = s.userRepo.UpdateBook(book)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+
