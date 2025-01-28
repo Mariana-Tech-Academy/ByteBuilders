@@ -17,6 +17,8 @@ type UserRepository interface {
 	CreateBorrow(borrow models.Borrow) error
 	FindBookByBookID(bookid uint) (models.Book, error)
 	UpdateBook(book models.Book) (models.Book, error)
+	FindBorrowedRecordByBookID(bookID uint) (models.Borrow, error)
+	MarkBorrowAsReturned(borrowID uint) error
 }
 
 type userRepository struct{}
@@ -87,3 +89,19 @@ func (r *userRepository) UpdateBook(book models.Book) (models.Book, error) {
 func (r *userRepository) CreateBorrow(borrow models.Borrow) error {
 	return config.DB.Create(&borrow).Error
 }
+
+func (r *userRepository) FindBorrowedRecordByBookID(bookid uint) (models.Borrow, error) {
+    var borrow models.Borrow
+
+    err := config.DB.Where("book_id = ?", bookid).First(&borrow).Error
+    if err != nil {
+        return models.Borrow{}, err
+    }
+    return borrow, nil
+}
+
+func (r *userRepository) MarkBorrowAsReturned(borrowid uint) error {
+    return config.DB.Model(&models.Borrow{}).Where("id = ?", borrowid).Update("status", "returned").Error
+}
+
+

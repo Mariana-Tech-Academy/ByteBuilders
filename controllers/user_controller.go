@@ -125,3 +125,20 @@ func (u *UserController) BorrowBook(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"message": book})
 }
+
+
+func (u *UserController) ReturnBorrowedBook(c *gin.Context) {
+
+	paramsid := c.Param("id")
+	id, err := strconv.Atoi(paramsid)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Book ID not available"})
+		return
+	}
+	err = u.userService.ReturnBorrowedBook(uint(id))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Book returned"})
+}
