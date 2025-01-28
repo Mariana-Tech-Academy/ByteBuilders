@@ -13,6 +13,7 @@ type UserService interface {
 	Login(username, password string) (string, error)
 	GetUserByUserName(username string) (models.User, error)
 	Logout(tokenstring string) error
+	ListBorrowedBooks(username string) ([]models.Borrow, error)
 	GetAllAuthors() ([]models.Author, error)
 	BorrowBook(bookid uint, username string) (models.Book, error)
 	ReturnBorrowedBook(bookid uint) error
@@ -94,6 +95,25 @@ func (s *userService) Logout(tokenString string) error {
 
 	return nil
 
+}
+
+// call db methode
+// list of authors & errors
+// if we need then
+
+func (s *userService) ListBorrowedBooks(username string) ([]models.Borrow, error) {
+
+	user, err := s.userRepo.FindUserByUsername(username)
+	if err != nil {
+		return []models.Borrow{}, err
+	}
+
+	listOfBooks, err := s.userRepo.ListBorrowedBooks(user.ID)
+	if err != nil {
+		return []models.Borrow{}, err
+	}
+
+	return listOfBooks, nil
 }
 
 func (s *userService) GetAllAuthors() ([]models.Author, error) {

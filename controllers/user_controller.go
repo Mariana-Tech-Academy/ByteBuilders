@@ -96,6 +96,20 @@ func (u *UserController) Logout(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"token": tokenString, "message": "Logout successful"})
 }
 
+func (u *UserController) ListBorrowedBooks(c *gin.Context) {
+
+	username := c.GetString("username")
+
+	borrowedbooks, err := u.userService.ListBorrowedBooks(username)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"user": borrowedbooks})
+
+}
+
 func (u *UserController) GetAuthors(ctx *gin.Context) {
 	authors, err := u.userService.GetAllAuthors()
 	if err != nil {
