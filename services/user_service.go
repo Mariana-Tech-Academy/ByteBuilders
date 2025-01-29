@@ -96,10 +96,6 @@ func (s *userService) Logout(tokenString string) error {
 
 }
 
-// call db methode
-// list of authors & errors
-// if we need then
-
 func (s *userService) ListBorrowedBooks(username string) ([]models.Borrow, error) {
 
 	user, err := s.userRepo.FindUserByUsername(username)

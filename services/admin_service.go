@@ -59,3 +59,14 @@ func (s *AdminService) DeleteBook(id uint) error {
 	}
 	return nil
 }
+
+func (s *AdminService) DeleteUser(UserID uint) error {
+
+	err := s.adminRepo.Deleteuser(UserID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}

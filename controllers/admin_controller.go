@@ -119,3 +119,21 @@ func (a *AdminController) DeleteBook(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "The deletion was succesful"})
 
 }
+
+func (s *AdminController) DeleteUser(c *gin.Context) {
+	parmamID := c.Param("id")
+	userid, err := strconv.Atoi(parmamID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
+		return
+	}
+
+	err = s.adminService.DeleteUser(uint(userid))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "The User deleted"})
+
+}
