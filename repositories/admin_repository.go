@@ -80,3 +80,13 @@ func (r *AdminRepository) DeleteBook(id uint) error {
 	}
 	return nil
 }
+
+func (r *AdminRepository) Deleteuser(UserID uint) error {
+
+	var deletingUser models.User
+
+	if err := config.DB.Where("id = ?", UserID).Delete(&deletingUser).Error; err != nil {
+		return err
+	}
+	return nil
+}
