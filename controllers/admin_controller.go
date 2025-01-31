@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -128,12 +129,12 @@ func (s *AdminController) DeleteUser(c *gin.Context) {
 		return
 	}
 
-	err = s.adminService.DeleteUser(uint(userid))
+	user, err := s.adminService.DeleteUser(uint(userid))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "The User deleted"})
+	c.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("%v is deleted", user.Username)})
 
 }

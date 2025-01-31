@@ -146,10 +146,10 @@ func (t *UserController) SearchBooks(c *gin.Context) {
 
 	books, err := t.userService.SearchForBook(query)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError,gin.H{"Error": "Failed to find book"})
+		c.JSON(http.StatusInternalServerError, gin.H{"Error": "Failed to find book"})
 	}
 
-	c.JSON(http.StatusFound,gin.H{"message": books})
+	c.JSON(http.StatusFound, gin.H{"message": books})
 }
 
 func (u *UserController) ReturnBorrowedBook(c *gin.Context) {
@@ -167,4 +167,3 @@ func (u *UserController) ReturnBorrowedBook(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Book returned"})
 }
-

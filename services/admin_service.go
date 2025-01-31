@@ -60,13 +60,13 @@ func (s *AdminService) DeleteBook(id uint) error {
 	return nil
 }
 
-func (s *AdminService) DeleteUser(UserID uint) error {
+func (s *AdminService) DeleteUser(UserID uint) (models.User, error) {
 
-	err := s.adminRepo.Deleteuser(UserID)
+	user, err := s.adminRepo.Deleteuser(UserID)
 	if err != nil {
-		return err
+		return models.User{}, err
 	}
 
-	return nil
+	return user, nil
 
 }
